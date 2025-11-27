@@ -1,25 +1,6 @@
+// Worktree操作のコア機能
 import { $ } from "bun";
-
-export interface Worktree {
-  path: string;
-  branch: string;
-  head: string;
-  agent?: string; // claude, gemini, codex など
-}
-
-export interface FileDiff {
-  file: string;
-  insertions: number;
-  deletions: number;
-  status: "added" | "modified" | "deleted" | "renamed";
-}
-
-export interface WorktreeDiff {
-  worktree: Worktree;
-  files: FileDiff[];
-  totalInsertions: number;
-  totalDeletions: number;
-}
+import type { Worktree, WorktreeDiff, FileDiff, OperationResult } from "./types";
 
 // エージェント名を推測（ブランチ名やパスから）
 function detectAgent(worktree: Worktree): string {
@@ -34,7 +15,7 @@ function detectAgent(worktree: Worktree): string {
 // worktree一覧を取得
 export async function listWorktrees(repoPath: string): Promise<Worktree[]> {
   try {
-    const result = await $`cd ${repoPath} && git worktree list --porcelain`.text();
+    const result = await $`cd ${repoPath} && git worktree list --porcelain`.quiet().text();
     const worktrees: Worktree[] = [];
     let current: Partial<Worktree> = {};
 
@@ -57,7 +38,7 @@ export async function listWorktrees(repoPath: string): Promise<Worktree[]> {
 
     return worktrees;
   } catch (error) {
-    console.error("Failed to list worktrees:", error);
+    // Not a git repository or other error - return empty list
     return [];
   }
 }
@@ -75,7 +56,7 @@ export async function getWorktreeDiff(
 
     // 差分統計を取得
     const diffStat = await $`cd ${worktree.path} && git diff --numstat ${base}`.text();
-    
+
     const files: FileDiff[] = [];
     let totalInsertions = 0;
     let totalDeletions = 0;
@@ -85,14 +66,14 @@ export async function getWorktreeDiff(
       const [ins, del, file] = line.split("\t");
       const insertions = ins === "-" ? 0 : parseInt(ins, 10);
       const deletions = del === "-" ? 0 : parseInt(del, 10);
-      
+
       files.push({
         file,
         insertions,
         deletions,
         status: "modified", // 簡略化
       });
-      
+
       totalInsertions += insertions;
       totalDeletions += deletions;
     }
@@ -111,21 +92,6 @@ export async function getWorktreeDiff(
       totalInsertions: 0,
       totalDeletions: 0,
     };
-  }
-}
-
-// ファイルの実際の差分内容を取得
-export async function getFileDiff(
-  worktreePath: string,
-  filePath: string,
-  baseBranch: string = "main"
-): Promise<string> {
-  try {
-    const mergeBase = await $`cd ${worktreePath} && git merge-base ${baseBranch} HEAD`.text();
-    const diff = await $`cd ${worktreePath} && git diff ${mergeBase.trim()} -- ${filePath}`.text();
-    return diff;
-  } catch (error) {
-    return `Error getting diff: ${error}`;
   }
 }
 
@@ -152,4 +118,73 @@ export async function detectPotentialConflicts(
   }
 
   return conflicts;
+}
+
+// 新しいworktreeを作成
+export async function createWorktree(
+  repoPath: string,
+  worktreePath: string,
+  branchName: string,
+  createNewBranch: boolean = true
+): Promise<OperationResult> {
+  try {
+    const args = createNewBranch
+      ? ["worktree", "add", "-b", branchName, worktreePath]
+      : ["worktree", "add", worktreePath, branchName];
+
+    const proc = Bun.spawn(["git", ...args], {
+      cwd: repoPath,
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+
+    const stdout = await new Response(proc.stdout).text();
+    const stderr = await new Response(proc.stderr).text();
+    const exitCode = await proc.exited;
+
+    if (exitCode === 0) {
+      return { success: true, output: stdout || `Worktree created at ${worktreePath}` };
+    } else {
+      return { success: false, output: stderr || stdout || `Failed with exit code ${exitCode}` };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      output: error.message || "Failed to create worktree"
+    };
+  }
+}
+
+// worktreeを削除
+export async function removeWorktree(
+  repoPath: string,
+  worktreePath: string,
+  force: boolean = false
+): Promise<OperationResult> {
+  try {
+    const args = force
+      ? ["worktree", "remove", "--force", worktreePath]
+      : ["worktree", "remove", worktreePath];
+
+    const proc = Bun.spawn(["git", ...args], {
+      cwd: repoPath,
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+
+    const stdout = await new Response(proc.stdout).text();
+    const stderr = await new Response(proc.stderr).text();
+    const exitCode = await proc.exited;
+
+    if (exitCode === 0) {
+      return { success: true, output: stdout || `Worktree removed: ${worktreePath}` };
+    } else {
+      return { success: false, output: stderr || stdout || `Failed with exit code ${exitCode}` };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      output: error.message || "Failed to remove worktree"
+    };
+  }
 }

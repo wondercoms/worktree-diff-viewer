@@ -12,16 +12,51 @@
 
 ## セットアップ
 
-```bash
-# Bun がインストールされていない場合
-curl -fsSL https://bun.sh/install | bash
+### Bun のインストール
 
+#### macOS / Linux
+
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+または Homebrew を使用：
+
+```bash
+brew install oven-sh/bun/bun
+```
+
+#### Windows
+
+PowerShell で以下を実行：
+
+```powershell
+powershell -c "irm bun.sh/install.ps1 | iex"
+```
+
+または npm 経由でインストール：
+
+```bash
+npm install -g bun
+```
+
+### プロジェクトのセットアップ
+
+```bash
 # 依存関係インストール
 cd worktree-diff-viewer
 bun install
 
 # 開発サーバー起動
 bun run dev
+```
+
+### ポートの変更
+
+デフォルトではポート 3000 で起動します。変更したい場合は環境変数 `PORT` を指定してください：
+
+```bash
+PORT=3001 bun run dev
 ```
 
 ## 使い方
