@@ -177,7 +177,6 @@ header h1 {
 .worktree-column {
   flex: 1;
   min-width: 350px;
-  max-width: 500px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -185,6 +184,11 @@ header h1 {
   display: flex;
   flex-direction: column;
   max-height: calc(100vh - 250px);
+}
+
+/* 3件以上のときはmax-widthを設定 */
+.worktree-columns:has(.worktree-column:nth-child(3)) .worktree-column {
+  max-width: 500px;
 }
 
 .column-header {
