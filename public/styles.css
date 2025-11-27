@@ -1,0 +1,344 @@
+:root {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #21262d;
+  --border-color: #30363d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --accent: #58a6ff;
+  --green: #3fb950;
+  --red: #f85149;
+  --yellow: #d29922;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* Config Bar */
+.config-bar {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.config-form {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+.config-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 200px;
+}
+
+.config-form input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.config-form input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.config-form button {
+  padding: 0.5rem 1.5rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.config-form button:hover {
+  opacity: 0.9;
+}
+
+/* Conflict Warning */
+.conflict-warning {
+  background: rgba(210, 153, 34, 0.1);
+  border: 1px solid var(--yellow);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.conflict-warning h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+  color: var(--yellow);
+}
+
+.conflict-warning ul {
+  list-style: none;
+}
+
+.conflict-warning li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+  font-size: 0.9rem;
+}
+
+.conflict-warning code {
+  background: var(--bg-tertiary);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.conflict-agents {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.agent-tag {
+  padding: 0.1rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  color: #fff;
+}
+
+/* Worktree Columns - 縦長カラムレイアウト */
+.worktree-columns {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.worktree-column {
+  flex: 1;
+  min-width: 350px;
+  max-width: 500px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  border-top: 3px solid var(--agent-color, var(--accent));
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 250px);
+}
+
+.column-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.agent-badge {
+  background: var(--agent-color, var(--accent));
+  color: #fff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.branch-name {
+  color: var(--text-secondary);
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.card-stats {
+  display: flex;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+.stat {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.stat.insertions {
+  color: var(--green);
+}
+
+.stat.deletions {
+  color: var(--red);
+}
+
+.stat.files {
+  color: var(--text-secondary);
+}
+
+/* File List */
+.file-list {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.file-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.file-item.active {
+  background: var(--bg-tertiary);
+  border-left: 2px solid var(--agent-color, var(--accent));
+}
+
+.file-name {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.file-changes {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-family: monospace;
+  flex-shrink: 0;
+}
+
+.file-changes .ins {
+  color: var(--green);
+}
+
+.file-changes .del {
+  color: var(--red);
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+}
+
+/* Diff Panel - カラム内の差分表示エリア */
+.diff-panel {
+  flex: 1;
+  overflow: auto;
+  min-height: 150px;
+}
+
+.diff-panel .placeholder {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 2rem 1rem;
+  font-size: 0.85rem;
+}
+
+.diff-detail {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.diff-detail h3 {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  font-family: monospace;
+  background: var(--bg-tertiary);
+  position: sticky;
+  top: 0;
+}
+
+.diff-content {
+  padding: 0.75rem;
+  font-family: monospace;
+  font-size: 0.8rem;
+  overflow-x: auto;
+  flex: 1;
+}
+
+.diff-line {
+  white-space: pre;
+}
+
+.diff-add {
+  background: rgba(63, 185, 80, 0.15);
+  color: var(--green);
+}
+
+.diff-remove {
+  background: rgba(248, 81, 73, 0.15);
+  color: var(--red);
+}
+
+.diff-hunk {
+  color: var(--accent);
+  margin: 0.5rem 0;
+}
+
+/* HTMX loading indicator */
+.htmx-request {
+  opacity: 0.6;
+}

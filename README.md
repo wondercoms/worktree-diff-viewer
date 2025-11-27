@@ -1,0 +1,67 @@
+# Worktree Diff Viewer
+
+複数のAIエージェント（Claude Code、Gemini CLI、Codex など）が並列で作業している Git worktree の差分を可視化するツールです。
+
+## 機能
+
+- 📂 Worktree 一覧の自動検出
+- 📊 各 worktree の変更統計（追加/削除行数、ファイル数）
+- 🔍 ファイルごとの差分表示
+- ⚠️ 複数エージェントが同じファイルを編集している場合のコンフリクト警告
+- 🎨 エージェント別のカラーコーディング
+
+## セットアップ
+
+```bash
+# Bun がインストールされていない場合
+curl -fsSL https://bun.sh/install | bash
+
+# 依存関係インストール
+cd worktree-diff-viewer
+bun install
+
+# 開発サーバー起動
+bun run dev
+```
+
+## 使い方
+
+1. ブラウザで http://localhost:3000 を開く
+2. "Repository" にGitリポジトリのパスを入力
+3. "Base Branch" にベースブランチ名を入力（デフォルト: main）
+4. "Refresh" をクリック
+
+## Worktree の準備例
+
+```bash
+# メインリポジトリで worktree を作成
+cd ~/projects/my-app
+
+git worktree add ../my-app-claude feature/claude-auth
+git worktree add ../my-app-gemini feature/gemini-api
+git worktree add ../my-app-codex feature/codex-tests
+```
+
+各 worktree で別のAIエージェントを使って開発し、このビューアで差分を確認できます。
+
+## API
+
+JSON API も提供しています：
+de
+```bash
+# Worktree 一覧
+curl "http://localhost:3000/api/worktrees?repo=/path/to/repo"
+
+# 差分情報
+curl "http://localhost:3000/api/diffs?repo=/path/to/repo&base=main"
+```
+
+## 技術スタック
+
+- [Hono](https://hono.dev/) - 軽量 Web フレームワーク
+- [Bun](https://bun.sh/) - JavaScript ランタイム
+- [htmx](https://htmx.org/) - インタラクティブ UI
+
+## ライセンス
+
+MIT
