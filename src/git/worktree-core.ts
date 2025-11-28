@@ -54,12 +54,12 @@ export async function getWorktreeDiff(
     const mergeBase = await $`cd ${worktree.path} && git merge-base ${baseBranch} HEAD`.text();
     const base = mergeBase.trim();
 
-    // 差分統計を取得
-    const diffStat = await $`cd ${worktree.path} && git diff --numstat ${base}`.text();
-
     const files: FileDiff[] = [];
     let totalInsertions = 0;
     let totalDeletions = 0;
+
+    // 1. コミット済みの差分を取得
+    const diffStat = await $`cd ${worktree.path} && git diff --numstat ${base}`.text();
 
     for (const line of diffStat.split("\n")) {
       if (!line.trim()) continue;
@@ -71,11 +71,66 @@ export async function getWorktreeDiff(
         file,
         insertions,
         deletions,
-        status: "modified", // 簡略化
+        status: "modified",
       });
 
       totalInsertions += insertions;
       totalDeletions += deletions;
+    }
+
+    // 2. 未ステージングの変更を取得（ワーキングツリーの変更）
+    const unstagedDiff = await $`cd ${worktree.path} && git diff --numstat`.text();
+
+    for (const line of unstagedDiff.split("\n")) {
+      if (!line.trim()) continue;
+      const [ins, del, file] = line.split("\t");
+      // 既に追加済みのファイルはスキップ
+      if (files.some(f => f.file === file)) continue;
+
+      const insertions = ins === "-" ? 0 : parseInt(ins, 10);
+      const deletions = del === "-" ? 0 : parseInt(del, 10);
+
+      files.push({
+        file,
+        insertions,
+        deletions,
+        status: "modified",
+      });
+
+      totalInsertions += insertions;
+      totalDeletions += deletions;
+    }
+
+    // 3. 未追跡（untracked）のファイルを取得
+    const untrackedFiles = await $`cd ${worktree.path} && git ls-files --others --exclude-standard`.text();
+
+    for (const file of untrackedFiles.split("\n")) {
+      if (!file.trim()) continue;
+      // 既に追加済みのファイルはスキップ
+      if (files.some(f => f.file === file)) continue;
+
+      // 新規ファイルの行数をカウント
+      try {
+        const lineCount = await $`cd ${worktree.path} && wc -l < "${file}"`.text();
+        const insertions = parseInt(lineCount.trim(), 10) || 0;
+
+        files.push({
+          file,
+          insertions,
+          deletions: 0,
+          status: "added",
+        });
+
+        totalInsertions += insertions;
+      } catch {
+        // バイナリファイルなどの場合
+        files.push({
+          file,
+          insertions: 0,
+          deletions: 0,
+          status: "added",
+        });
+      }
     }
 
     return {
