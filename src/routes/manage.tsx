@@ -109,6 +109,16 @@ app.post("/create-worktree", async (c) => {
 
   const result = await createWorktree(repoPath, worktreePath, branchName, createNewBranch);
 
+  // 成功したらページをリロード
+  if (result.success) {
+    return c.html(
+      <div>
+        <WorktreeResult success={true} output={result.output} />
+        <script dangerouslySetInnerHTML={{ __html: "setTimeout(() => location.reload(), 1000);" }} />
+      </div>
+    );
+  }
+
   return c.html(
     <WorktreeResult success={result.success} output={result.output} />
   );
@@ -127,6 +137,16 @@ app.post("/remove-worktree", async (c) => {
   }
 
   const result = await removeWorktree(repoPath, worktreePath);
+
+  // 成功したらページをリロード
+  if (result.success) {
+    return c.html(
+      <div>
+        <WorktreeResult success={true} output={result.output} />
+        <script dangerouslySetInnerHTML={{ __html: "setTimeout(() => location.reload(), 1000);" }} />
+      </div>
+    );
+  }
 
   return c.html(
     <WorktreeResult success={result.success} output={result.output} />
