@@ -10,8 +10,10 @@
 - ⚠️ 複数エージェントが同じファイルを編集している場合のコンフリクト警告
 - 🎨 エージェント別のカラーコーディング
 
-<img width="1593" height="928" alt="Image" src="https://github.com/user-attachments/assets/d8dc7a14-1358-479b-987a-6a2a0ec0d345" />
+AI agent diff viewer
+<img width="1445" height="1224" alt="Image" src="https://github.com/user-attachments/assets/17bb32f2-e39c-4f11-8365-38dbd6990ce2" />
 
+Manage worktree
 <img width="1437" height="1060" alt="Image" src="https://github.com/user-attachments/assets/88828569-b687-4839-b5a4-55082a7b353c" />
 
 ## セットアップ
