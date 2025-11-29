@@ -10,9 +10,9 @@
 - ⚠️ 複数エージェントが同じファイルを編集している場合のコンフリクト警告
 - 🎨 エージェント別のカラーコーディング
 
-https://github.com/wondercoms/worktree-diff-viewer/issues/1#issue-3676141331
+<img width="1593" height="928" alt="Image" src="https://github.com/user-attachments/assets/d8dc7a14-1358-479b-987a-6a2a0ec0d345" />
 
-https://github.com/wondercoms/worktree-diff-viewer/issues/2#issue-3676141528
+<img width="1437" height="1060" alt="Image" src="https://github.com/user-attachments/assets/88828569-b687-4839-b5a4-55082a7b353c" />
 
 ## セットアップ
 
