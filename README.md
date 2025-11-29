@@ -4,11 +4,22 @@
 
 ## 機能
 
+### 差分表示
 - 📂 Worktree 一覧の自動検出
 - 📊 各 worktree の変更統計（追加/削除行数、ファイル数）
 - 🔍 ファイルごとの差分表示
 - ⚠️ 複数エージェントが同じファイルを編集している場合のコンフリクト警告
 - 🎨 エージェント別のカラーコーディング
+
+### Hunk 単位の変更取り込み
+- ✅ 差分を hunk（変更ブロック）単位で選択的に取り込み可能
+- 🔀 必要な変更だけをメインブランチに適用
+
+### Worktree 管理
+- ➕ 新規 Worktree の作成（ブランチ名指定）
+- 🗑️ 不要な Worktree の削除
+- 🔄 Worktree のブランチをメインブランチにマージ
+- 📋 Worktree 一覧の表示と管理
 
 AI agent diff viewer
 <img width="1445" height="1224" alt="Image" src="https://github.com/user-attachments/assets/17bb32f2-e39c-4f11-8365-38dbd6990ce2" />
